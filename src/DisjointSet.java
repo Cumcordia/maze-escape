@@ -5,30 +5,61 @@
  */
 public class DisjointSet {
 
+    private final int[] parent;
+    private final int[] size;
+    private int count;
+
     public DisjointSet(int n) {
-        // TODO
+        parent = new int[n];
+        size = new int[n];
+        count = n;
+        for (int i = 0; i < n; i++){
+            parent[i] = i;
+            size[i] = 1;
+        }
     }
 
     /** The root of the set that contains x. */
     public int find(int x) {
-        // TODO
+        int root = x;
+        while (parent[root] != root){
+            root = parent[root];
+        }
+
+        while (parent[x] != root){
+            int next = parent[x];
+            parent[x] = root;
+            x = next;
+        }
+
         return x;
     }
 
     /** Joins the sets of a and b. Returns true if they were different sets, false if they were already one set. */
     public boolean union(int a, int b) {
-        // TODO
+        int ra = find(a), rb = find(b);
+
+        if (ra == rb){
+            return false;
+        }
+
+        if(size[ra] < size[rb]){
+            int temp = ra;
+            ra = rb;
+            rb = temp;
+        }
+        parent[rb] = ra;
+        size[ra] += size[rb];
+        count--;
         return false;
     }
 
     public boolean connected(int a, int b) {
-        // TODO
-        return false;
+        return find(a) == find(b);
     }
 
     /** Number of sets now. */
     public int count() {
-        // TODO
-        return 0;
+        return count;
     }
 }
