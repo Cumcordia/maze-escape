@@ -32,7 +32,7 @@ public class DisjointSet {
             x = next;
         }
 
-        return x;
+        return root;
     }
 
     /** Joins the sets of a and b. Returns true if they were different sets, false if they were already one set. */
@@ -51,7 +51,7 @@ public class DisjointSet {
         parent[rb] = ra;
         size[ra] += size[rb];
         count--;
-        return false;
+        return true;
     }
 
     public boolean connected(int a, int b) {
