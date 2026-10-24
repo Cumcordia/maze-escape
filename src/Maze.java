@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.PriorityQueue;
+
 /**
  * Missions 1 and 2. Building the maze out of the walls.
  * A wall k joins the cells w.a()[k] and w.b()[k] and costs w.cost()[k]. Indexes start from 0,
@@ -32,8 +35,27 @@ public class Maze {
      * Returns the indexes of the broken walls.
      */
     public static int[] cheapestMaze(Input.Walls w) {
-        // TODO
-        return new int[0];
+        int[] result = new int[w.rows() * w.cols() - 1];
+        Integer[] order = new Integer[w.count()];
+        int breakCount = 0;
+        int[] a = w.a();
+        int[] b = w.b();
+        DisjointSet disjointSet = new DisjointSet(w.rows() * w.cols());
+
+        for(int i = 0; i < w.count(); i++){
+            order[i] = i;
+        }
+
+        int[] cost = w.cost();
+        Arrays.sort(order, (x, y) -> Integer.compare(cost[x], cost[y]));
+
+        for(int i = 0; i < w.count(); i++){
+            if(disjointSet.union(a[order[i]], b[order[i]])){
+                result[breakCount] = order[i];
+                breakCount++;
+            }
+        }
+        return result;
     }
 
     /**
@@ -41,7 +63,39 @@ public class Maze {
      * It must be equal to the total cost of cheapestMaze.
      */
     public static long primCost(Input.Walls w) {
-        // TODO
-        return 0;
+        int V = w.rows() * w.cols();
+        int count = w.count();
+        int[] cost = w.cost();
+        int[] a = w.a();
+        int[] b = w.b();
+        int[] head = new int[V];
+        Arrays.fill(head, -1);
+        int[] next = new int[2 * count];
+
+        boolean[] inTree = new boolean[V];
+        PriorityQueue<Integer> pq = new PriorityQueue<>((x, y) -> Integer.compare(cost[x / 2], cost[y / 2]));
+        long total = 0;
+        int taken = 0;
+
+        for(int i = 0; i < count; i++){
+            next[2 * i] = head[a[i]];
+            head[a[i]] = 2 * i;
+            
+            next[2 * i + 1] = head[b[i]];
+            head[b[i]] = 2 * i + 1;
+        }
+
+        for(int e = 0; e != -1; e = next[e]){
+            pq.add(e);
+        }
+
+        while (!pq.isEmpty() && taken < V - 1){
+            int e = pq.poll();
+            int u = 
+            if(inTree[u]){
+                continue;
+            }
+        }
+        return total;
     }
 }
