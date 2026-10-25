@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Mission 3. Escape: DFS from cell 0 to the last cell (rows * cols - 1) in the maze of Mission 1.
  * Two neighbouring cells are connected when the wall between them is broken.
@@ -16,7 +18,35 @@ public class Escape {
     public record Result(int[] path, int visited, int deadEnds) {}
 
     public static Result escape(Input.Walls w, int[] broken) {
-        // TODO
-        return new Result(new int[0], 0, 0);
+        int n = w.rows() * w.cols();
+        int[][] adj = Graphs.open(w, broken);
+        int[] offset = {-w.cols(), 1, w.cols(), -1};
+        int[] stack = new int[n];
+        boolean[] seen = new boolean[n];
+        int[] dir = new int[n];
+        int top = 0;
+        int visited = 1;
+        int deadEnds = 0;
+        stack[0] = 0;
+        seen[0] = true;
+
+        while(stack[top] != n -1){
+            int v = stack[top];
+            if(dir[v] < 4){
+                int u = v + offset[dir[v]];
+                dir[v]++;
+
+                if( && !seen[u]){
+                    seen[u] = true;
+                    visited++;
+                    stack[++top] = u;
+                }
+            } else{
+                top--;
+            }
+        }
+
+        int[] path = Arrays.copyOf(stack, top + 1);
+        return new Result(path, visited, deadEnds);
     }
 }

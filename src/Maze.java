@@ -71,6 +71,7 @@ public class Maze {
         int[] head = new int[V];
         Arrays.fill(head, -1);
         int[] next = new int[2 * count];
+        int[] to = new int[2 * count];
 
         boolean[] inTree = new boolean[V];
         PriorityQueue<Integer> pq = new PriorityQueue<>((x, y) -> Integer.compare(cost[x / 2], cost[y / 2]));
@@ -85,15 +86,23 @@ public class Maze {
             head[b[i]] = 2 * i + 1;
         }
 
-        for(int e = 0; e != -1; e = next[e]){
+        inTree[0] = true;
+        for(int e = head[0]; e != -1; e = next[e]){
             pq.add(e);
         }
 
         while (!pq.isEmpty() && taken < V - 1){
             int e = pq.poll();
-            int u = 
+            int u = to[e];
             if(inTree[u]){
                 continue;
+            }
+
+            total += cost[e/2];
+            taken++;
+            inTree[u] = true;
+            for (int f = head[u]; f != -1; f = next[f]){
+                pq.add(f);
             }
         }
         return total;
