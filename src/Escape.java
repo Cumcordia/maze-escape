@@ -36,7 +36,7 @@ public class Escape {
                 int u = v + offset[dir[v]];
                 dir[v]++;
 
-                if( && !seen[u]){
+                if(contains(adj[v], u) && !seen[u]){
                     seen[u] = true;
                     visited++;
                     stack[++top] = u;
@@ -48,5 +48,14 @@ public class Escape {
 
         int[] path = Arrays.copyOf(stack, top + 1);
         return new Result(path, visited, deadEnds);
+    }
+
+    public static boolean contains(int[] list, int x){
+        for (int y : list){
+            if(x == y){
+                return true;
+            }
+        }
+        return false;
     }
 }

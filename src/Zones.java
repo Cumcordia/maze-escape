@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Missions 4 and 5. The slides: a directed graph. Cells are 0 .. n-1, slide i goes from s.from()[i] to s.to()[i]
  * and takes s.time()[i]. There are no slides from a cell to itself, and the exit can always be reached from the start.
@@ -19,7 +21,40 @@ public class Zones {
      * Is DAG in Main is 1 when the number of zones equals the number of cells (no cycle), so you do not need a separate check.
      */
     public static int[] kosaraju(Input.Slides s) {
-        // TODO
+        int n = s.n();
+        int[][] out = Graphs.slidesFrom(s);
+        int[][] in = Graphs.slidesInto(s);
+        int[] from = s.from();
+        int[] to = s.to();
+
+        boolean[] seen = new boolean[n];
+        int[] idx = new int[n];
+        int[] stack = new int[n];
+        int[] order = new int[n];
+        int count = 0;
+
+        for(int start = 0; start < 0; start++){
+            if(seen[start]){
+                continue;
+            }
+            int top = 0;
+            stack[0] = start;
+            seen[start] = true;
+            while(top >= 0){
+                int v = stack[top];
+                if(idx[v] < out[v].length){
+                    int i = out[v][idx[v]++];
+                    int u = to[i];
+                    if(!seen[u]){
+                        seen[u] = true;
+                        stack[++top] = u;
+                    }
+                } else{
+                    order[count++] = v;
+                    top--;
+                }
+            }
+        }
         return new int[s.n()];
     }
 
@@ -30,7 +65,41 @@ public class Zones {
      * [1] the cost of the cheapest route from the zone of cell 0 to the zone of the last cell.
      */
     public static long[] routes(Input.Slides s, int[] zoneOf, int zoneCount) {
-        // TODO
-        return new long[]{0, 0};
+        int m = s.from().length;
+        int[] from = s.from(), to = s.to(), time = s.time();
+        int[] head = new int[zoneCount];
+        Arrays.fill(head, -1);
+        int[] next = new int[m];
+        for(int i = 0; i < m; i++){
+            int z = zoneOf[from[i]];
+            next[i] = head[z];
+            head[z] = i;
+        }
+
+        long inf = Long.MAX_VALUE / 4;
+        long[] distance = new long[zoneCount];
+        Arrays.fill(distance, inf);
+        distance[zoneOf[0]] = 0;
+        int[] stages = new int[zoneCount];
+        Arrays.fill(stages, 1);
+
+        for(int z = 0; z < zoneCount; z++){
+            for(int i = head[z]; i != -1; i = next[i]){
+                int y = zoneOf[to[i]];
+                if(y == z){
+                    continue;
+                }
+                stages[y] = Math.max(stages[y], stages[z] + 1);
+                if(distance[z] < inf){
+                    distance[y] = Math.min(distance[y], distance[z] + time[i]);
+                }
+            }
+        }
+
+        int best = 0;
+        for(int z = 0; z < zoneCount; z++){
+            best = Math.max(best, stages[z]);
+        }
+        return new long[]{best, distance[zoneOf[s.n() - 1]]};
     }
 }
