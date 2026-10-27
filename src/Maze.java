@@ -73,18 +73,20 @@ public class Maze {
         int[] next = new int[2 * count];
         int[] to = new int[2 * count];
 
+        for(int i = 0; i < count; i++){
+            next[2 * i] = head[a[i]];
+            head[a[i]] = 2 * i;
+            to[2 * i] = b[i];
+            
+            next[2 * i + 1] = head[b[i]];
+            head[b[i]] = 2 * i + 1;
+            to[2 * i + 1] = a[i];
+        }
+
         boolean[] inTree = new boolean[V];
         PriorityQueue<Integer> pq = new PriorityQueue<>((x, y) -> Integer.compare(cost[x / 2], cost[y / 2]));
         long total = 0;
         int taken = 0;
-
-        for(int i = 0; i < count; i++){
-            next[2 * i] = head[a[i]];
-            head[a[i]] = 2 * i;
-            
-            next[2 * i + 1] = head[b[i]];
-            head[b[i]] = 2 * i + 1;
-        }
 
         inTree[0] = true;
         for(int e = head[0]; e != -1; e = next[e]){

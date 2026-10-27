@@ -33,7 +33,7 @@ public class Zones {
         int[] order = new int[n];
         int count = 0;
 
-        for(int start = 0; start < 0; start++){
+        for(int start = 0; start < n; start++){
             if(seen[start]){
                 continue;
             }
@@ -55,7 +55,31 @@ public class Zones {
                 }
             }
         }
-        return new int[s.n()];
+
+        int[] zoneOf = new int[n];
+        Arrays.fill(zoneOf, -1);
+        int zones = 0;
+
+        for (int k = n - 1; k >= 0; k--) {
+            int v = order[k];
+            if (zoneOf[v] != -1) continue;
+
+            int top = 0;
+            stack[0] = v;
+            zoneOf[v] = zones;
+            while (top >= 0) {
+                int x = stack[top--];
+                for (int i : in[x]) {
+                    int u = from[i];
+                    if (zoneOf[u] == -1) {
+                        zoneOf[u] = zones;
+                        stack[++top] = u;
+                    }
+                }
+            }
+            zones++;
+        }
+        return zoneOf;
     }
 
     /**

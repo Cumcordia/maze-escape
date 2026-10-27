@@ -30,6 +30,10 @@ public class Escape {
         stack[0] = 0;
         seen[0] = true;
 
+        for (int v = 0; v < n; v++) {
+            if (adj[v].length == 1) deadEnds++;
+        }
+
         while(stack[top] != n -1){
             int v = stack[top];
             if(dir[v] < 4){
